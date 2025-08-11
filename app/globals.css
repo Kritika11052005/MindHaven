@@ -1,26 +1,228 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  /* Therapeutic Light Theme - Warm, calming, professional */
+  --radius: 0.75rem;
+  
+  /* Main backgrounds - Soft cream and warm whites */
+  --background: oklch(0.98 0.005 45); /* Warm white with hint of cream */
+  --foreground: oklch(0.25 0.015 240); /* Deep blue-grey for readability */
+  
+  /* Cards and surfaces - Gentle elevation */
+  --card: oklch(0.99 0.003 60); /* Very light cream */
+  --card-foreground: oklch(0.28 0.02 240);
+  --popover: oklch(0.99 0.003 60);
+  --popover-foreground: oklch(0.28 0.02 240);
+  
+  /* Primary - Calming sage green for trust and healing */
+  --primary: oklch(0.52 0.08 150); /* Sage green */
+  --primary-foreground: oklch(0.98 0.005 150);
+  
+  /* Secondary - Soft lavender for serenity */
+  --secondary: oklch(0.92 0.03 280); /* Light lavender */
+  --secondary-foreground: oklch(0.35 0.04 270);
+  
+  /* Muted - Warm neutral tones */
+  --muted: oklch(0.94 0.015 60); /* Warm light grey */
+  --muted-foreground: oklch(0.55 0.025 240); /* Medium blue-grey */
+  
+  /* Accent - Soft coral for warmth and approachability */
+  --accent: oklch(0.88 0.06 25); /* Soft coral */
+  --accent-foreground: oklch(0.4 0.04 25);
+  
+  /* Destructive - Gentle warning red */
+  --destructive: oklch(0.65 0.15 15); /* Muted red */
+  
+  /* Borders and inputs - Subtle definition */
+  --border: oklch(0.88 0.02 45); /* Warm light border */
+  --input: oklch(0.95 0.01 45); /* Light warm input background */
+  --ring: oklch(0.52 0.08 150); /* Matches primary for focus */
+  
+  /* Charts - Therapeutic color palette */
+  --chart-1: oklch(0.52 0.08 150); /* Sage green */
+  --chart-2: oklch(0.6 0.12 200); /* Soft blue */
+  --chart-3: oklch(0.7 0.1 280); /* Lavender */
+  --chart-4: oklch(0.75 0.08 25); /* Warm coral */
+  --chart-5: oklch(0.65 0.06 50); /* Warm beige */
+  
+  /* Sidebar - Slightly deeper for structure */
+  --sidebar: oklch(0.96 0.01 45); /* Light warm sidebar */
+  --sidebar-foreground: oklch(0.3 0.02 240);
+  --sidebar-primary: oklch(0.52 0.08 150);
+  --sidebar-primary-foreground: oklch(0.98 0.005 150);
+  --sidebar-accent: oklch(0.92 0.03 280);
+  --sidebar-accent-foreground: oklch(0.35 0.04 270);
+  --sidebar-border: oklch(0.85 0.025 45);
+  --sidebar-ring: oklch(0.52 0.08 150);
+}
+
+.dark {
+  /* Therapeutic Dark Theme - Deep, cozy, contemplative */
+  
+  /* Main backgrounds - Deep navy and warm charcoal */
+  --background: oklch(0.12 0.04 240); /* Deep navy blue */
+  --foreground: oklch(0.92 0.01 60); /* Warm off-white */
+  
+  /* Cards and surfaces - Elevated warm greys */
+  --card: oklch(0.18 0.03 240); /* Slightly lighter navy */
+  --card-foreground: oklch(0.9 0.015 60);
+  --popover: oklch(0.18 0.03 240);
+  --popover-foreground: oklch(0.9 0.015 60);
+  
+  /* Primary - Soft mint green for calm and growth */
+  --primary: oklch(0.7 0.12 160); /* Soft mint green */
+  --primary-foreground: oklch(0.15 0.03 240);
+  
+  /* Secondary - Deep purple for wisdom and introspection */
+  --secondary: oklch(0.25 0.04 270); /* Deep purple */
+  --secondary-foreground: oklch(0.85 0.02 280);
+  
+  /* Muted - Warm dark greys */
+  --muted: oklch(0.22 0.03 250); /* Dark blue-grey */
+  --muted-foreground: oklch(0.65 0.02 60); /* Warm medium grey */
+  
+  /* Accent - Warm peach for approachability */
+  --accent: oklch(0.35 0.08 30); /* Deep warm accent */
+  --accent-foreground: oklch(0.85 0.04 30);
+  
+  /* Destructive - Soft red for gentle warnings */
+  --destructive: oklch(0.55 0.18 20); /* Muted red */
+  
+  /* Borders and inputs - Subtle warm definition */
+  --border: oklch(0.3 0.04 240); /* Subtle border */
+  --input: oklch(0.2 0.03 240); /* Dark input background */
+  --ring: oklch(0.7 0.12 160); /* Matches primary */
+  
+  /* Charts - Night-friendly therapeutic palette */
+  --chart-1: oklch(0.7 0.12 160); /* Mint green */
+  --chart-2: oklch(0.65 0.15 210); /* Soft blue */
+  --chart-3: oklch(0.6 0.12 280); /* Soft purple */
+  --chart-4: oklch(0.7 0.1 30); /* Warm peach */
+  --chart-5: oklch(0.55 0.08 50); /* Warm gold */
+  
+  /* Sidebar - Structured dark navigation */
+  --sidebar: oklch(0.15 0.035 240); /* Darker sidebar */
+  --sidebar-foreground: oklch(0.88 0.02 60);
+  --sidebar-primary: oklch(0.7 0.12 160);
+  --sidebar-primary-foreground: oklch(0.15 0.03 240);
+  --sidebar-accent: oklch(0.25 0.04 270);
+  --sidebar-accent-foreground: oklch(0.85 0.02 280);
+  --sidebar-border: oklch(0.28 0.04 240);
+  --sidebar-ring: oklch(0.7 0.12 160);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    /* Smooth transitions for theme switching */
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Therapeutic enhancements */
+  ::selection {
+    @apply bg-primary/20;
+  }
+  
+  /* Smooth scrolling for a calming experience */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Custom therapeutic focus styles */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Additional therapeutic utility classes */
+/* Additional therapeutic utility classes */
+@layer utilities {
+  .text-therapeutic {
+    @apply text-muted-foreground leading-relaxed;
+  }
+  
+  .bg-therapeutic-gradient {
+    background: linear-gradient(135deg, oklch(var(--background)) 0%, oklch(var(--muted)) 100%);
+  }
+  
+  .shadow-therapeutic {
+    box-shadow: 0 4px 24px -2px oklch(var(--primary) / 0.1);
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 1s ease-in-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .animate-slide-in-left {
+    animation: slideInLeft 0.8s ease-out;
+  }
+  @keyframes slideInLeft {
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  
+  .group:hover .group-hover\:scale-105 {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+  }
+  .group:hover .group-hover\:opacity-90 {
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+  }
+  
+  .animate-glow {
+    animation: glow 2s infinite ease-in-out;
+    text-shadow: 0 0 5px oklch(var(--primary) / 0.6), 0 0 10px oklch(var(--primary) / 0.4);
+  }
 }
