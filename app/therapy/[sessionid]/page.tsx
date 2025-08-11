@@ -35,7 +35,7 @@ import {
   ChatMessage,
   getAllChatSessions,
   ChatSession,
-} from "@/lib/api/chat";
+} from "@/app/lib/api/chat";
 import { ScrollArea } from "@/app/components/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
 
