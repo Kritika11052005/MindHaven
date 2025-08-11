@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 // Adjust path as needed
 import { motion } from "framer-motion";
-import { Ripple } from "@/components/ui/ripples";
-import { Slider } from "@/components/ui/slider";
-import { Button } from "@/components/ui/button";
+import { Ripple } from "./components/ui/ripples";
+import { Slider } from "./components/ui/slider";
+import { Button } from "./components/ui/button";
 import {
   Brain,
   Heart,
@@ -21,8 +21,8 @@ import {
   Lock,
   MessageSquareHeart,
 } from "lucide-react";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { useSession } from '@/lib/context/sessionContext';  // Replace with your actual auth hook
+import { Card, CardHeader, CardContent } from "./components/ui/card";
+import { useSession } from './lib/context/sessionContext';  // Replace with your actual auth hook
 import { useRouter } from 'next/navigation'; // For Next.js App Router
 interface CustomSession {
   isAuthenticated: boolean;

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Card } from "@/components/ui/card";
+import { Card } from "@/app/components/ui/card";
 import { Heart, Target, Sparkles } from "lucide-react";
 
 const missions = [

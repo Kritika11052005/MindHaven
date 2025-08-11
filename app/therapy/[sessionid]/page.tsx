@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/components/ui/button";
 import {
   Send,
   Bot,
@@ -17,7 +17,7 @@ import {
   PlusCircle,
   MessageSquare,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/app/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import {
@@ -26,12 +26,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import BreathingGame from "@/components/games/breathingGame";
-import { OceanWaves } from "@/components/games/oceanWaves";
-import { ForestGame } from "@/components/games/forest";
-import { ZenGarden } from "@/components/games/zenGarden";
-import { Badge } from "@/components/ui/badge";
+} from "@/app/components/ui/card"
+import { Badge } from "@/app/components/ui/badge";
 import {
   createChatSession,
   sendChatMessage,
@@ -40,9 +36,9 @@ import {
   getAllChatSessions,
   ChatSession,
 } from "@/lib/api/chat";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/app/components/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
-import { Separator } from "@/components/ui/separator";
+
 
 interface SuggestedQuestion {
   id: string;

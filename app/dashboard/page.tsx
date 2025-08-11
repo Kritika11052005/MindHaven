@@ -30,16 +30,16 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Container } from "@/components/ui/container";
-import { cn } from "@/lib/utils";
+} from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
+import { Container } from "../components/ui/container";
+import { cn } from "../lib/utils";
 
-import { MoodForm } from "@/components/mood/moodForm";
-import { AnxietyGames } from "@/components/games/anxietyGames";
-import { getMoodHistory,trackMood } from "@/lib/api/mood";
-import { getUserActivities,saveMoodData,logActivity } from "@/lib/staticDashboardData";
+import { MoodForm } from "../components/mood/moodForm";
+import { AnxietyGames } from "../components/games/anxietyGames";
+import { getMoodHistory,trackMood } from "../lib/api/mood";
+import { getUserActivities,saveMoodData,logActivity } from "@/app/lib/staticDashboardData";
 
 import {
   Dialog,
@@ -47,7 +47,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
+} from "../components/ui/dialog";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   addDays,
@@ -56,9 +56,9 @@ import {
   startOfDay,
   isWithinInterval,
 } from "date-fns";
-import { ActivityLogger } from "@/components/activities/activittiesLogger";
-import { useSession } from "@/lib/context/sessionContext";
-import { getAllChatSessions,getAuthHeaders } from "@/lib/api/chat";
+import { ActivityLogger } from "../components/activities/activittiesLogger";
+import { useSession } from "../lib/context/sessionContext";
+import { getAllChatSessions,getAuthHeaders } from "@/app/lib/api/chat";
 
 // Add this type definition
 type ActivityLevel = "none" | "low" | "medium" | "high";
@@ -76,7 +76,7 @@ interface DayActivity {
 interface Insight {
   title: string;
   description: string;
-  icon: LucideIcon; // or React.ComponentType<any>
+  icon: LucideIcon; // This is the correct type from lucide-react
   priority: "low" | "medium" | "high";
 }
 // Add this interface near the top with other interfaces
@@ -142,7 +142,7 @@ const calculateDailyStats = (activities: Activity[]): DailyStats => {
 
 // Rename the function
 // Replace your existing generateInsights function with this:
-const generateInsights = (activities: Activity[]) => {
+const generateInsights = (activities: Activity[]): Insight[] => {
   console.log("🔍 Generating insights with activities:", activities.length);
   
   const insights: Insight[] = [];
@@ -296,12 +296,7 @@ export default function Dashboard() {
   const {isAuthenticated, user } = useSession();
    const [loading, setLoading] = useState(false);
   // Rename the state variable
-  const [insights, setInsights] = useState<{
-  title: string;
-  description: string;
-  icon: any; // This matches what generateInsights returns
-  priority: "high" | "medium" | "low";
-}[]>([]); 
+  const [insights, setInsights] = useState<Insight[]>([]);
 
   // New states for activities and wearables
   
@@ -395,7 +390,7 @@ useEffect(() => {
   console.log("🔄 Activities changed, regenerating insights:", activities.length);
   const newInsights = generateInsights(activities);
   console.log("🔄 New insights generated:", newInsights.length);
-  setInsights(newInsights as any);
+  setInsights(newInsights);
 }, [activities]); // This will trigger when activities array changes
   // Add function to fetch daily stats
 // Update your fetchDailyStats function to log the actual structure of activities:

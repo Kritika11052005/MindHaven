@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { Card } from "@/components/ui/card";
-import { Container } from "@/components/ui/container";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card } from "../components/ui/card";
+import { Container } from "../components/ui/container";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 import Link from "next/link";
 import { Lock } from "lucide-react";
 import { API_URL } from "../config/constants";
