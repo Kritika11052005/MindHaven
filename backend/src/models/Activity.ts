@@ -1,4 +1,3 @@
-import { timeStamp } from "console";
 import mongoose,{Document,Schema} from "mongoose";
 export interface IActivity extends Document{
     userId:mongoose.Types.ObjectId;

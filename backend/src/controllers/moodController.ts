@@ -2,6 +2,15 @@ import {Request, Response, NextFunction} from "express"
 import {Mood} from "../models/Mood"
 import {logger} from "../utils/logger"
 
+// Define interface for query filter
+interface MoodQuery {
+    userId: string;
+    timestamp?: {
+        $gte: Date;
+        $lte: Date;
+    };
+}
+
 // Create mood entry (existing function - keep as is)
 export const createdMood = async(
     req: Request,
@@ -37,7 +46,7 @@ export const createdMood = async(
     }
 }
 
-// NEW: Get mood data (add this function)
+// NEW: Get mood data (fixed function)
 export const getMoodData = async(
     req: Request,
     res: Response,
@@ -53,7 +62,8 @@ export const getMoodData = async(
         // Get query parameters for filtering
         const { date, startDate, endDate } = req.query;
 
-        const query: any = { userId };
+        // Use proper typing instead of 'any' - TypeScript assertion after validation
+        const query: MoodQuery = { userId: userId as string };
 
         // If specific date is provided
         if (date) {
@@ -100,7 +110,7 @@ export const getMoodData = async(
     }
 }
 
-// NEW: Get mood history (add this function)
+// NEW: Get mood history (fixed function)
 export const getMoodHistory = async(
     req: Request,
     res: Response,
@@ -116,7 +126,8 @@ export const getMoodHistory = async(
         // Default to last 30 days if no date range provided
         const { startDate, endDate, days = 30 } = req.query;
         
-        let query: any = { userId };
+        // Use proper typing instead of 'any' - TypeScript assertion after validation
+        const query: MoodQuery = { userId: userId as string };
         
         if (startDate && endDate) {
             query.timestamp = {

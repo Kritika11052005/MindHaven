@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { logger } from "../utils/logger";
 import { inngest } from "../inngest/index";
 import { User } from "../models/User";
-import { InngestSessionResponse, InngestEvent } from "../types/inngest";
+import { InngestEvent } from "../types/inngest";
 import { Types } from "mongoose";
 
 // Initialize Gemini API
@@ -13,7 +13,7 @@ const genAI = new GoogleGenerativeAI(
   process.env.GEMINI_API_KEY || "AIzaSyBCBz3wQu9Jjd_icCDZf-17CUO_O8IynwI"
 );
 // Add this new function to your existing controller
-export const getAllChatSessions = async (req: any, res: Response) => {
+export const getAllChatSessions = async (req: Request, res: Response) => {
     try {
         console.log("=== GET ALL CHAT SESSIONS DEBUG ===");
         
@@ -75,12 +75,12 @@ export const getAllChatSessions = async (req: any, res: Response) => {
         
         res.json(transformedSessions);
         
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("❌ Error fetching chat sessions:", error);
-        res.status(500).json({ 
-            error: 'Failed to fetch chat sessions',
-            message: error.message 
-        });
+        res.status(500).json({
+    error: "Failed to fetch chat sessions",
+    message: error instanceof Error ? error.message : String(error)
+  });
     }
 };
 // Create a new chat session

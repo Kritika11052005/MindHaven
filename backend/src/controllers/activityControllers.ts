@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { Activity, IActivity } from "../models/Activity";
+import { Activity } from "../models/Activity";
 import { logger } from "../utils/logger";
 import { sendActivityCompletionEvent } from "../utils/inngestEvents";
 
@@ -63,7 +63,7 @@ export const logActivity = async (
 ) => {
   try {
     console.log("logActivity req.user:", req.user);
-        console.log("Body received:", req.body);
+    console.log("Body received:", req.body);
     const { type, name, description, duration, difficulty, feedback } =
       req.body;
     const userId = req.user?._id;
@@ -86,10 +86,10 @@ export const logActivity = async (
     await activity.save();
     logger.info(`Activity logged for user ${userId}`);
 
-    // Send activity completion event to Inngest
+    // Send activity completion event to Inngest - Convert ObjectIds to strings
     await sendActivityCompletionEvent({
-      userId,
-      id: activity._id,
+      userId: userId.toString(), // Convert to string
+      id: activity.id, // Mongoose provides this as a string getter
       type,
       name,
       duration,

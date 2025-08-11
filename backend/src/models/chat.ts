@@ -1,11 +1,21 @@
 import { Document, Schema, model, Types } from "mongoose";
 
+// Define proper interface for analysis data
+interface IAnalysis {
+  sentiment?: string;
+  emotions?: string[];
+  keyTopics?: string[];
+  riskFactors?: string[];
+  recommendations?: string[];
+  [key: string]: unknown; // Allow additional properties
+}
+
 export interface IChatMessage {
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
   metadata?: {
-    analysis?: any;
+    analysis?: IAnalysis; // Use proper typing instead of 'any'
     currentGoal?: string | null;
     progress?: {
       emotionalState?: string;
@@ -28,7 +38,7 @@ const chatMessageSchema = new Schema<IChatMessage>({
   content: { type: String, required: true },
   timestamp: { type: Date, required: true },
   metadata: {
-    analysis: Schema.Types.Mixed,
+    analysis: Schema.Types.Mixed, // Keep as Mixed for MongoDB flexibility
     currentGoal: String,
     progress: {
       emotionalState: String,

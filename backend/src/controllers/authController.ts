@@ -4,7 +4,8 @@ import { Session } from "../models/Session";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import crypto from "crypto";
-import { sendResetEmail,validateEmailConfig} from "../utils/emailService";
+import { sendResetEmail, validateEmailConfig } from "../utils/emailService";
+
 export const register = async (req: Request, res: Response) => {
     try {
         const { name, email, password } = req.body;
@@ -31,12 +32,16 @@ export const register = async (req: Request, res: Response) => {
         })
 
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
-
-
-
+        console.error('Register error:', error);
+        res.status(500).json({ 
+            message: "Server error",
+            ...(process.env.NODE_ENV === 'development' && { 
+                error: error instanceof Error ? error.message : 'Unknown error' 
+            })
+        });
     }
 }
+
 export const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
@@ -59,7 +64,6 @@ export const login = async (req: Request, res: Response) => {
             { expiresIn: "24h" }
         );
 
-
         const expiresAt = new Date();
         expiresAt.setHours(expiresAt.getHours() + 24);
         const session = new Session({
@@ -67,7 +71,6 @@ export const login = async (req: Request, res: Response) => {
             token,
             expiresAt,
             deviceInfo: req.headers["user-agent"],
-
         });
         await session.save();
         res.json({
@@ -81,24 +84,34 @@ export const login = async (req: Request, res: Response) => {
         })
 
     } catch (error) {
-        res.status(500).json({ message: "Server error", error })
-
+        console.error('Login error:', error);
+        res.status(500).json({ 
+            message: "Server error",
+            ...(process.env.NODE_ENV === 'development' && { 
+                error: error instanceof Error ? error.message : 'Unknown error' 
+            })
+        });
     }
-
-
-
 }
+
 export const logout = async (req: Request, res: Response) => {
     try {
-        const token = req.header("Authorization")?.replace("Bearer ", " ");
+        const token = req.header("Authorization")?.replace("Bearer ", "");
         if (token) {
             await Session.deleteOne({ token });
         }
         res.json({ message: "Logged out successfully" })
     } catch (error) {
-        res.status(500).json({ message: "Server error", error })
+        console.error('Logout error:', error);
+        res.status(500).json({ 
+            message: "Server error",
+            ...(process.env.NODE_ENV === 'development' && { 
+                error: error instanceof Error ? error.message : 'Unknown error' 
+            })
+        });
     }
 }
+
 export const forgotPassword = async (req: Request, res: Response) => {
     try {
         // Validate email config first
@@ -149,13 +162,20 @@ export const forgotPassword = async (req: Request, res: Response) => {
             res.status(200).json({
                 message: "Password reset email sent successfully"
             });
-        } catch (emailError: any) {
+        } catch (emailError) {
+            const error = emailError as Error & {
+                code?: string;
+                command?: string;
+                response?: string;
+                responseCode?: number;
+            };
+            
             console.error('❌ Email send error details:', {
-                message: emailError.message,
-                code: emailError.code,
-                command: emailError.command,
-                response: emailError.response,
-                responseCode: emailError.responseCode
+                message: error.message,
+                code: error.code,
+                command: error.command,
+                response: error.response,
+                responseCode: error.responseCode
             });
 
             // Clear reset token if email fails
@@ -166,21 +186,22 @@ export const forgotPassword = async (req: Request, res: Response) => {
             return res.status(500).json({
                 message: "Email could not be sent",
                 ...(process.env.NODE_ENV === 'development' && { 
-                    error: emailError.message,
-                    code: emailError.code 
+                    error: error.message,
+                    code: error.code 
                 })
             });
         }
-    } catch (error: any) {
+    } catch (error) {
         console.error('❌ Forgot password error:', error);
         res.status(500).json({
             message: "Server error",
             ...(process.env.NODE_ENV === 'development' && { 
-                error: error.message 
+                error: error instanceof Error ? error.message : 'Unknown error'
             })
         });
     }
 };
+
 export const resetPassword = async (req: Request, res: Response) => {
     try {
         const { token, newPassword } = req.body;
@@ -224,7 +245,10 @@ export const resetPassword = async (req: Request, res: Response) => {
     } catch (error) {
         console.error('Reset password error:', error);
         res.status(500).json({
-            message: "Server error"
+            message: "Server error",
+            ...(process.env.NODE_ENV === 'development' && { 
+                error: error instanceof Error ? error.message : 'Unknown error'
+            })
         });
     }
 };

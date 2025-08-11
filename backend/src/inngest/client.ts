@@ -4,9 +4,8 @@ import { Inngest } from "inngest";
 export const inngest = new Inngest({
   id: "ai-therapy-agent",
   // You can add your Inngest signing key here if you have one
-  eventKey:
-    "",
+  eventKey: "",
 });
 
-// Export the functions array (this will be populated by the functions.ts file)
-export const functions: any[] = [];
+// Export the functions array with proper typing
+export const functions: Array<ReturnType<typeof inngest.createFunction>> = [];
