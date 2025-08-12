@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/app/lib/utils"
+import { cn } from "@/lib/utils"
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
