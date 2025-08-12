@@ -9,19 +9,40 @@ import { sendResetEmail, validateEmailConfig } from "../utils/emailService";
 export const register = async (req: Request, res: Response) => {
     try {
         const { name, email, password } = req.body;
+        
+        console.log('📝 Registration attempt:', { name, email, passwordProvided: !!password });
+        
         if (!name || !email || !password) {
+            console.log('❌ Missing required fields');
             return res
                 .status(400)
-                .json({ message: "Name,email,and password are required." })
-
+                .json({ message: "Name, email, and password are required." })
         }
-        const existingUser = await User.findOne({ email });
+
+        // Normalize email to lowercase and trim
+        const normalizedEmail = email.toLowerCase().trim();
+        
+        // Check if user already exists (case-insensitive)
+        const existingUser = await User.findOne({ email: normalizedEmail });
         if (existingUser) {
+            console.log('❌ User already exists:', normalizedEmail);
             return res.status(409).json({ message: "Email already in use" });
         }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ name, email, password: hashedPassword })
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 12); // Increased from 10 to 12 for better security
+        
+        // Create user with normalized email
+        const user = new User({ 
+            name: name.trim(), 
+            email: normalizedEmail, 
+            password: hashedPassword 
+        });
+        
         await user.save();
+        
+        console.log('✅ User registered successfully:', normalizedEmail);
+        
         res.status(201).json({
             user: {
                 _id: user._id,
@@ -29,10 +50,10 @@ export const register = async (req: Request, res: Response) => {
                 email: user.email,
             },
             message: "User registered successfully"
-        })
+        });
 
     } catch (error) {
-        console.error('Register error:', error);
+        console.error('❌ Register error:', error);
         res.status(500).json({ 
             message: "Server error",
             ...(process.env.NODE_ENV === 'development' && { 
@@ -45,34 +66,61 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
+        
+        console.log('🔑 Login attempt for:', email);
+        
         if (!email || !password) {
+            console.log('❌ Missing email or password');
             return res
                 .status(400)
                 .json({ message: "Email and password are required" });
         }
-        const user = await User.findOne({ email });
+
+        // Normalize email to lowercase and trim
+        const normalizedEmail = email.toLowerCase().trim();
+        
+        // Find user (case-insensitive email lookup)
+        const user = await User.findOne({ email: normalizedEmail });
         if (!user) {
+            console.log('❌ User not found:', normalizedEmail);
             return res.status(401).json({ message: "Invalid email or password" });
         }
-        const isPasswordValid = await bcrypt.compare(password, user.password)
+
+        // Verify password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
+            console.log('❌ Invalid password for user:', normalizedEmail);
             return res.status(401).json({ message: "Invalid email or password" });
         }
+
+        // Generate JWT token - FIXED: Use user._id consistently
         const token = jwt.sign(
-            { userId: user.id },
+            { userId: user._id }, // Changed from user.id to user._id
             process.env.JWT_SECRET as string,
             { expiresIn: "24h" }
         );
 
+        // Create session
         const expiresAt = new Date();
         expiresAt.setHours(expiresAt.getHours() + 24);
-        const session = new Session({
-            userId: user._id,
-            token,
-            expiresAt,
-            deviceInfo: req.headers["user-agent"],
-        });
-        await session.save();
+        
+        try {
+            const session = new Session({
+                userId: user._id,
+                token,
+                expiresAt,
+                deviceInfo: req.headers["user-agent"],
+                lastActive: new Date() // Added to match your Session model
+            });
+            await session.save();
+            console.log('✅ Session created for user:', normalizedEmail);
+        } catch (sessionError) {
+            console.error('⚠️ Session creation failed, but continuing with login:', sessionError);
+            // Continue with login even if session creation fails
+        }
+
+        console.log('✅ Login successful for:', normalizedEmail);
+        
         res.json({
             user: {
                 _id: user._id,
@@ -81,10 +129,10 @@ export const login = async (req: Request, res: Response) => {
             },
             token,
             message: "Login successful",
-        })
+        });
 
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('❌ Login error:', error);
         res.status(500).json({ 
             message: "Server error",
             ...(process.env.NODE_ENV === 'development' && { 
@@ -96,13 +144,21 @@ export const login = async (req: Request, res: Response) => {
 
 export const logout = async (req: Request, res: Response) => {
     try {
-        const token = req.header("Authorization")?.replace("Bearer ", "");
+        const token = req.header("Authorization")?.replace("Bearer ", "").trim();
+        
         if (token) {
-            await Session.deleteOne({ token });
+            try {
+                await Session.deleteOne({ token });
+                console.log('✅ Session deleted for logout');
+            } catch (sessionError) {
+                console.error('⚠️ Session deletion failed:', sessionError);
+                // Continue with logout even if session deletion fails
+            }
         }
-        res.json({ message: "Logged out successfully" })
+        
+        res.json({ message: "Logged out successfully" });
     } catch (error) {
-        console.error('Logout error:', error);
+        console.error('❌ Logout error:', error);
         res.status(500).json({ 
             message: "Server error",
             ...(process.env.NODE_ENV === 'development' && { 
@@ -126,11 +182,14 @@ export const forgotPassword = async (req: Request, res: Response) => {
             });
         }
 
-        // Find user by email
-        const user = await User.findOne({ email: email.toLowerCase() });
+        // Normalize email
+        const normalizedEmail = email.toLowerCase().trim();
+
+        // Find user by email (case-insensitive)
+        const user = await User.findOne({ email: normalizedEmail });
         
         if (!user) {
-            console.log('❌ User not found for email:', email);
+            console.log('❌ User not found for email:', normalizedEmail);
             // Don't reveal if user exists or not for security
             return res.status(200).json({
                 message: "If an account exists, a reset link has been sent."
@@ -156,8 +215,8 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
         try {
             console.log('📤 Attempting to send email to:', user.email);
-            const result = await sendResetEmail(user.email, resetUrl, user.name || 'User');
-            console.log('✅ Email sent successfully!', result);
+            await sendResetEmail(user.email, resetUrl, user.name || 'User');
+            console.log('✅ Email sent successfully!');
             
             res.status(200).json({
                 message: "Password reset email sent successfully"
@@ -212,6 +271,12 @@ export const resetPassword = async (req: Request, res: Response) => {
             });
         }
 
+        if (newPassword.length < 6) {
+            return res.status(400).json({
+                message: "Password must be at least 6 characters long"
+            });
+        }
+
         // Hash the token to compare with stored hash
         const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
@@ -222,13 +287,14 @@ export const resetPassword = async (req: Request, res: Response) => {
         });
 
         if (!user) {
+            console.log('❌ Invalid or expired reset token');
             return res.status(400).json({
                 message: "Invalid or expired reset token"
             });
         }
 
         // Hash new password
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        const hashedPassword = await bcrypt.hash(newPassword, 12);
         
         // Update user password and clear reset fields
         user.password = hashedPassword;
@@ -236,14 +302,22 @@ export const resetPassword = async (req: Request, res: Response) => {
         user.resetPasswordExpires = undefined;
         await user.save();
 
+        console.log('✅ Password reset successful for:', user.email);
+
         // Clear all existing sessions for security
-        await Session.deleteMany({ userId: user._id });
+        try {
+            await Session.deleteMany({ userId: user._id });
+            console.log('✅ All user sessions cleared');
+        } catch (sessionError) {
+            console.error('⚠️ Session cleanup failed:', sessionError);
+            // Continue even if session cleanup fails
+        }
 
         res.status(200).json({
             message: "Password reset successfully"
         });
     } catch (error) {
-        console.error('Reset password error:', error);
+        console.error('❌ Reset password error:', error);
         res.status(500).json({
             message: "Server error",
             ...(process.env.NODE_ENV === 'development' && { 
