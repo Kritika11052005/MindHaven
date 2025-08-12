@@ -1,5 +1,16 @@
 # 🧠 MindHaven – AI Therapist Agent
 
+
+
+![Recording 2025-08-12 204531](https://github.com/user-attachments/assets/c7ff26f4-99e6-4a8b-817a-34811b56320b)
+
+
+**Live Deployment**:[https://mind-haven-fawn.vercel.app/](https://mind-haven-fawn.vercel.app/)
+
+
+
+<img width="1898" height="909" alt="image" src="https://github.com/user-attachments/assets/2f8316a1-7660-4cf5-9822-6ff4b96a31c8" />
+
 **MindHaven** is an AI-powered mental health platform combining **Google Gemini AI** for empathetic therapy, **blockchain security** for privacy, and **real-time crisis detection** — delivering 24/7, secure, and personalized mental health support.
 
 ---
@@ -55,5 +66,3 @@ Privacy, Innovation, Empathy, and Trust form the cornerstone of our platform, en
 - **Backend** (Render): [https://mindhaven-nca4.onrender.com/](https://mindhaven-nca4.onrender.com/)
 
 
-git clone https://github.com/your-username/mindhaven.git
-cd mindhaven
