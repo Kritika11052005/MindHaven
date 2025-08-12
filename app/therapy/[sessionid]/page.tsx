@@ -91,7 +91,7 @@ export default function TherapyPage() {
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [messages, setMessages] = useState<any>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [stressPrompt, setStressPrompt] = useState<StressPrompt | null>(null);
@@ -102,7 +102,7 @@ export default function TherapyPage() {
   const [sessionId, setSessionId] = useState<string | null>(
     params.sessionId as string
   );
-  const [sessions, setSessions] = useState<any>([]);
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
 
   const handleNewSession = async () => {
     try {

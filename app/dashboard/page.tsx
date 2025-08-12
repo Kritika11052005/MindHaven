@@ -104,7 +104,52 @@ interface DailyStats {
   totalActivities: number;
   lastUpdated: Date;
 }
-
+interface MoodEntry {
+  score: number;
+}
+interface MoodHistoryResponse {
+  success: boolean;
+  data?: MoodEntry[];
+}
+interface ApiChatSession {
+  id: string;
+  createdAt: string;
+  updatedAt?: string;
+  userId?: string;
+  title?: string;
+  status?: string;
+  // This matches what getAllChatSessions actually returns
+}
+interface ApiActivity {
+  id: string;
+  userId?: string | null;
+  type: string;
+  name: string;
+  description?: string | null;
+  timestamp: string;
+  duration?: number | null;
+  completed: boolean;
+  moodScore?: number | null;
+  moodNote?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+const convertApiActivityToActivity = (apiActivity: ApiActivity): Activity => {
+  return {
+    id: apiActivity.id,
+    userId: apiActivity.userId ?? null, // Use nullish coalescing to convert undefined to null
+    type: apiActivity.type,
+    name: apiActivity.name,
+    description: apiActivity.description ?? null,
+    timestamp: new Date(apiActivity.timestamp),
+    duration: apiActivity.duration ?? null,
+    completed: apiActivity.completed,
+    moodScore: apiActivity.moodScore ?? null,
+    moodNote: apiActivity.moodNote ?? null,
+    createdAt: new Date(apiActivity.createdAt),
+    updatedAt: new Date(apiActivity.updatedAt),
+  };
+};
 // Update the calculateDailyStats function to show correct stats
 const calculateDailyStats = (activities: Activity[]): DailyStats => {
   const today = startOfDay(new Date());
@@ -424,23 +469,23 @@ const fetchDailyStats = useCallback(async () => {
     const activitiesResponse = await fetch("/api/activities?filter=today", {
       headers: getAuthHeaders(),
     });
-    const activitiesData = await activitiesResponse.json();
+    const activitiesData: ApiActivity[] = await activitiesResponse.json();
     console.log("🎯 Activities:", activitiesData);
     
-    // ✅ ADD THIS LINE - Update the activities state!
-    setActivities(activitiesData);
+    const convertedActivities = activitiesData.map(convertApiActivityToActivity);
+    setActivities(convertedActivities);
     console.log("✅ Activities state updated with:", activitiesData.length, "activities");
 
     // Get mood data
     let averageMood = null;
     try {
-      const moodResponse = await getMoodHistory({
+      const moodResponse: MoodHistoryResponse = await getMoodHistory({
         startDate: startOfToday.toISOString(),
         endDate: endOfToday.toISOString()
       });
       
-      if (moodResponse.success && moodResponse.data?.length > 0) {
-        const total = moodResponse.data.reduce((acc: number, mood: any) => acc + mood.score, 0);
+      if (moodResponse.success && moodResponse.data?.length && moodResponse.data.length > 0) {
+        const total = moodResponse.data.reduce((acc: number, mood: MoodEntry) => acc + mood.score, 0);
         averageMood = Math.round(total / moodResponse.data.length);
       }
     } catch (error) {
@@ -448,7 +493,7 @@ const fetchDailyStats = useCallback(async () => {
     }
 
     // Calculate mindfulness activities from actual activities
-    const mindfulnessActivities = activitiesData.filter((activity: any) => 
+    const mindfulnessActivities = activitiesData.filter((activity: ApiActivity) => 
       ['meditation', 'breathing', 'mindfulness', 'game'].includes(activity.type)
     );
 
@@ -465,8 +510,8 @@ const fetchDailyStats = useCallback(async () => {
     setDailyStats(newStats);
     
     // ✅ OPTIONAL: Generate insights immediately after setting activities
-    console.log("🔄 Generating insights with fetched activities:", activitiesData.length);
-    const newInsights = generateInsights(activitiesData);
+    console.log("🔄 Generating insights with fetched activities:", convertedActivities.length);
+    const newInsights = generateInsights(convertedActivities);
     setInsights(newInsights);
     
   } catch (error) {
@@ -496,13 +541,13 @@ const fetchTodaysMoodScore = async (): Promise<number | null> => {
     const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const endOfToday = new Date(startOfToday.getTime() + 24 * 60 * 60 * 1000 - 1);
     
-    const response = await getMoodHistory({
+    const response:MoodHistoryResponse = await getMoodHistory({
       startDate: startOfToday.toISOString(),
       endDate: endOfToday.toISOString()
     });
     
     if (response.success && response.data && response.data.length > 0) {
-      const total = response.data.reduce((acc: number, mood: any) => acc + mood.score, 0);
+      const total = response.data.reduce((acc: number, mood: MoodEntry) => acc + mood.score, 0);
       return Math.round(total / response.data.length);
     }
     
@@ -543,7 +588,7 @@ const debugApiResponse = async () => {
     
     console.log("🔍 DEBUG: Full API response:", data);
     
-    data.forEach((activity: any, index: number) => {
+    data.forEach((activity: ApiActivity, index: number) => {
       console.log(`🔍 Activity ${index}:`, {
         id: activity.id,
         type: activity.type,
