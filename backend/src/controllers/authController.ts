@@ -7,140 +7,94 @@ import crypto from "crypto";
 import { sendResetEmail, validateEmailConfig } from "../utils/emailService";
 
 export const register = async (req: Request, res: Response) => {
-    try {
-        const { name, email, password } = req.body;
-        
-        console.log('📝 Registration attempt:', { name, email, passwordProvided: !!password });
-        
-        if (!name || !email || !password) {
-            console.log('❌ Missing required fields');
-            return res
-                .status(400)
-                .json({ message: "Name, email, and password are required." })
-        }
-
-        // Normalize email to lowercase and trim
-        const normalizedEmail = email.toLowerCase().trim();
-        
-        // Check if user already exists (case-insensitive)
-        const existingUser = await User.findOne({ email: normalizedEmail });
-        if (existingUser) {
-            console.log('❌ User already exists:', normalizedEmail);
-            return res.status(409).json({ message: "Email already in use" });
-        }
-
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 12); // Increased from 10 to 12 for better security
-        
-        // Create user with normalized email
-        const user = new User({ 
-            name: name.trim(), 
-            email: normalizedEmail, 
-            password: hashedPassword 
-        });
-        
-        await user.save();
-        
-        console.log('✅ User registered successfully:', normalizedEmail);
-        
-        res.status(201).json({
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-            },
-            message: "User registered successfully"
-        });
-
-    } catch (error) {
-        console.error('❌ Register error:', error);
-        res.status(500).json({ 
-            message: "Server error",
-            ...(process.env.NODE_ENV === 'development' && { 
-                error: error instanceof Error ? error.message : 'Unknown error' 
-            })
-        });
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Name, email, and password are required." });
     }
-}
+    // Check if user exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ message: "Email already in use." });
+    }
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    // Create user
+    const user = new User({ name, email, password: hashedPassword });
+    await user.save();
+    // Respond
+    res.status(201).json({
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+      message: "User registered successfully.",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
 
 export const login = async (req: Request, res: Response) => {
-    try {
-        const { email, password } = req.body;
-        
-        console.log('🔑 Login attempt for:', email);
-        
-        if (!email || !password) {
-            console.log('❌ Missing email or password');
-            return res
-                .status(400)
-                .json({ message: "Email and password are required" });
-        }
+  try {
+    const { email, password } = req.body;
 
-        // Normalize email to lowercase and trim
-        const normalizedEmail = email.toLowerCase().trim();
-        
-        // Find user (case-insensitive email lookup)
-        const user = await User.findOne({ email: normalizedEmail });
-        if (!user) {
-            console.log('❌ User not found:', normalizedEmail);
-            return res.status(401).json({ message: "Invalid email or password" });
-        }
-
-        // Verify password
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            console.log('❌ Invalid password for user:', normalizedEmail);
-            return res.status(401).json({ message: "Invalid email or password" });
-        }
-
-        // Generate JWT token - FIXED: Use user._id consistently
-        const token = jwt.sign(
-            { userId: user._id }, // Changed from user.id to user._id
-            process.env.JWT_SECRET as string,
-            { expiresIn: "24h" }
-        );
-
-        // Create session
-        const expiresAt = new Date();
-        expiresAt.setHours(expiresAt.getHours() + 24);
-        
-        try {
-            const session = new Session({
-                userId: user._id,
-                token,
-                expiresAt,
-                deviceInfo: req.headers["user-agent"],
-                lastActive: new Date() // Added to match your Session model
-            });
-            await session.save();
-            console.log('✅ Session created for user:', normalizedEmail);
-        } catch (sessionError) {
-            console.error('⚠️ Session creation failed, but continuing with login:', sessionError);
-            // Continue with login even if session creation fails
-        }
-
-        console.log('✅ Login successful for:', normalizedEmail);
-        
-        res.json({
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-            },
-            token,
-            message: "Login successful",
-        });
-
-    } catch (error) {
-        console.error('❌ Login error:', error);
-        res.status(500).json({ 
-            message: "Server error",
-            ...(process.env.NODE_ENV === 'development' && { 
-                error: error instanceof Error ? error.message : 'Unknown error' 
-            })
-        });
+    // Validate input
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and password are required." });
     }
-}
+
+    // Find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password." });
+    }
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid email or password." });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET || "your-secret-key",
+      { expiresIn: "24h" }
+    );
+
+    // Create session
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 24); // 24 hours from now
+
+    const session = new Session({
+      userId: user._id,
+      token,
+      expiresAt,
+      deviceInfo: req.headers["user-agent"],
+    });
+    await session.save();
+
+    // Respond with user data and token
+    res.json({
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+      token,
+      message: "Login successful",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
 
 export const logout = async (req: Request, res: Response) => {
     try {
