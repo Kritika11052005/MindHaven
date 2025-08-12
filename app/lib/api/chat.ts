@@ -5,7 +5,7 @@ export interface ChatMessage {
   metadata?: {
     technique: string;
     goal: string;
-    progress: any[];
+    progress: unknown[]; // changed from any[] to unknown[]
     analysis?: {
       emotionalState: string;
       themes: string[];
@@ -36,9 +36,10 @@ export interface ApiResponse {
   metadata?: {
     technique: string;
     goal: string;
-    progress: any[];
+    progress: unknown[]; // changed from any[] to unknown[]
   };
 }
+
 
 // ✅ This goes through your Next.js API routes
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "/api";
@@ -138,12 +139,13 @@ export const getChatHistory = async (
     }
 
     // Ensure each message has the correct format
-    return data.map((msg: any) => ({
-      role: msg.role,
-      content: msg.content,
-      timestamp: new Date(msg.timestamp),
-      metadata: msg.metadata,
-    }));
+    return data.map((msg: Partial<ChatMessage>) => ({
+  role: msg.role as "user" | "assistant",
+  content: msg.content as string,
+  timestamp: new Date(msg.timestamp as string | number | Date),
+  metadata: msg.metadata as ChatMessage["metadata"],
+})) as ChatMessage[];
+
   } catch (error) {
     console.error("Error fetching chat history:", error);
     throw error;
@@ -199,32 +201,41 @@ export const getAllChatSessions = async (): Promise<ChatSession[]> => {
     console.log("Is array:", Array.isArray(data));
     console.log("Data length:", data?.length);
 
-    const mappedData = data.map((session: any) => {
-      // Ensure dates are valid
-      const createdAt = new Date(session.createdAt || Date.now());
-      const updatedAt = new Date(session.updatedAt || Date.now());
+    const mappedData = (data as Partial<ChatSession>[]).map((session) => {
+  // Ensure dates are valid
+  const createdAt = new Date(session.createdAt as string | number | Date ?? Date.now());
+  const updatedAt = new Date(session.updatedAt as string | number | Date ?? Date.now());
 
-      return {
-        ...session,
-        createdAt: isNaN(createdAt.getTime()) ? new Date() : createdAt,
-        updatedAt: isNaN(updatedAt.getTime()) ? new Date() : updatedAt,
-        messages: (session.messages || []).map((msg: any) => ({
-          ...msg,
-          timestamp: new Date(msg.timestamp || Date.now()),
-        })),
-      };
-    });
+  return {
+    ...session,
+    createdAt: isNaN(createdAt.getTime()) ? new Date() : createdAt,
+    updatedAt: isNaN(updatedAt.getTime()) ? new Date() : updatedAt,
+    messages: (session.messages ?? []).map((msg) => ({
+      ...msg,
+      timestamp: new Date((msg?.timestamp as string | number | Date) ?? Date.now()),
+    })),
+  } as ChatSession;
+});
+
 
     console.log("Mapped data:", mappedData);
     console.log("=== END DEBUGGING ===");
     
     return mappedData;
   } catch (error) {
-    console.error("=== ERROR in getAllChatSessions ===");
-    console.error("Error type:", error?.constructor?.name);
-    console.error("Error message:", error?.message);
-    console.error("Full error object:", error);
-    console.error("=== END ERROR ===");
-    throw error;
+  console.error("=== ERROR in getAllChatSessions ===");
+
+  if (error instanceof Error) {
+    console.error("Error type:", error.constructor.name);
+    console.error("Error message:", error.message);
+  } else {
+    console.error("Error type:", typeof error);
+    console.error("Error message:", String(error));
   }
+
+  console.error("Full error object:", error);
+  console.error("=== END ERROR ===");
+  throw error;
+}
+
 };
