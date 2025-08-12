@@ -28,6 +28,7 @@ import {
   CardTitle,
 } from "@/app/components/ui/card"
 import { Badge } from "@/app/components/ui/badge";
+import { Variants } from "framer-motion";
 import {
   createChatSession,
   sendChatMessage,
@@ -70,17 +71,20 @@ const SUGGESTED_QUESTIONS = [
   { text: "I need help with work-life balance" },
 ];
 
-const glowAnimation = {
-  initial: { opacity: 0.5, scale: 1 },
-  animate: {
-    opacity: [0.5, 1, 0.5],
-    scale: [1, 1.05, 1],
-    transition: {
-      duration: 3,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
+const glowAnimation: Variants = {
+  initial: { 
+    opacity: 0.3, 
+    scale: 0.8 
   },
+  animate: { 
+    opacity: [0.3, 0.8, 0.3], 
+    scale: [0.8, 1.1, 0.8],
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: "easeInOut"
+    }
+  }
 };
 
 const COMPLETION_THRESHOLD = 5;
