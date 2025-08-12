@@ -55,7 +55,7 @@ export const getTodayActivities = async (req: Request, res: Response) => {
   }
 };
 
-// Log a new activity
+// Log a new activity - FIXED VERSION
 export const logActivity = async (
   req: Request,
   res: Response,
@@ -64,45 +64,74 @@ export const logActivity = async (
   try {
     console.log("logActivity req.user:", req.user);
     console.log("Body received:", req.body);
-    const { type, name, description, duration, difficulty, feedback } =
-      req.body;
+    
+    const { type, name, description, duration, difficulty, feedback } = req.body;
     const userId = req.user?._id;
 
     if (!userId) {
       return res.status(401).json({ message: "User not authenticated" });
     }
 
+    // Validate required fields
+    if (!type || !name) {
+      return res.status(400).json({ 
+        success: false,
+        message: "Type and name are required fields" 
+      });
+    }
+
     const activity = new Activity({
       userId,
       type,
       name,
-      description,
-      duration,
-      difficulty,
-      feedback,
+      description: description || '', // Provide default empty string
+      duration: duration || 0, // Provide default value
+      difficulty: difficulty || 1, // Provide default value
+      feedback: feedback || '', // Provide default empty string
       timestamp: new Date(),
     });
 
+    console.log("Saving activity:", activity);
     await activity.save();
+    console.log("✅ Activity saved successfully");
+    
     logger.info(`Activity logged for user ${userId}`);
 
-    // Send activity completion event to Inngest - Convert ObjectIds to strings
-    await sendActivityCompletionEvent({
-      userId: userId.toString(), // Convert to string
-      id: activity.id, // Mongoose provides this as a string getter
-      type,
-      name,
-      duration,
-      difficulty,
-      feedback,
-      timestamp: activity.timestamp,
-    });
+    // Send activity completion event to Inngest with better error handling
+    try {
+      await sendActivityCompletionEvent({
+        userId: userId.toString(), // Convert to string
+        id: activity.id, // Mongoose provides this as a string getter
+        type,
+        name,
+        duration: duration || 0,
+        difficulty: difficulty || 1,
+        feedback: feedback || '',
+        timestamp: activity.timestamp,
+      });
+      console.log("✅ Inngest event sent successfully");
+    } catch (inngestError) {
+      console.warn("⚠️ Inngest event failed (continuing):", inngestError);
+      // Don't fail the request if Inngest fails
+    }
 
+    console.log("✅ Sending success response");
     res.status(201).json({
       success: true,
+      message: "Activity logged successfully",
       data: activity,
     });
+
   } catch (error) {
-    next(error);
+    console.error("❌ ACTIVITY ERROR DETAILS:", error);
+    console.error("❌ ERROR MESSAGE:", error instanceof Error ? error.message : 'Unknown error');
+    console.error("❌ ERROR STACK:", error instanceof Error ? error.stack : 'No stack trace');
+    
+    // Handle the error properly instead of using next(error)
+    res.status(500).json({
+      success: false,
+      message: "Failed to log activity",
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
   }
 };
