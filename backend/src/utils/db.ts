@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import {logger} from './logger'
 
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://Kritika_benjwal:LPkOwsTISw37cPEd@ai-therapist-agent.xtxhznr.mongodb.net/ai-therapist-agent?retryWrites=true&w=majority&appName=ai-therapist-agent";
+const MONGODB_URI = (process.env.MONGODB_URI !)
 
 export const connectDB=async()=>{
     try{
