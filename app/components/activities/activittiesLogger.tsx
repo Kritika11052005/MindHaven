@@ -20,8 +20,8 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useToast } from "../ui/use-toast";
-import { useSession } from "@/app/lib/context/sessionContext";
-import { logActivity } from "@/app/lib/api/activity";
+import { useSession } from "@/lib/context/sessionContext";
+import { logActivity } from "@/lib/api/activity";
 
 const activityTypes = [
   { id: "meditation", name: "Meditation" },

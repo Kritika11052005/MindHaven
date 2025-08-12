@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { Slider } from "../ui/slider";
 import { Loader2 } from "lucide-react";
 import { useToast } from "../ui/use-toast";
-import { useSession } from "@/app/lib/context/sessionContext";
+import { useSession } from "@/lib/context/sessionContext";
 import { useRouter } from "next/navigation";
 
 // Updated interface to optionally accept mood data
