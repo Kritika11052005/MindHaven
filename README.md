@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 MindHaven – AI Therapist Agent
 
-## Getting Started
+---
 
-First, run the development server:
+![Recording 2025-08-12 204531](https://github.com/user-attachments/assets/c7ff26f4-99e6-4a8b-817a-34811b56320b)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Live Deployment**:[https://mind-haven-fawn.vercel.app/](https://mind-haven-fawn.vercel.app/)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+<img width="1898" height="909" alt="image" src="https://github.com/user-attachments/assets/2f8316a1-7660-4cf5-9822-6ff4b96a31c8" />
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+**MindHaven** is an AI-powered mental health platform combining **Google Gemini AI** for empathetic therapy, **blockchain security** for privacy, and **real-time crisis detection** — delivering 24/7, secure, and personalized mental health support.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🌟 About MindHaven
+
+**Mission**  
+To democratize access to mental health support through ethical AI and blockchain technology, making quality therapeutic care available to everyone, everywhere, at any time.
+
+**Vision**  
+A world where mental health support is accessible, private, and personalized, powered by trusted AI agents and secured by blockchain technology.
+
+**Values**  
+Privacy, Innovation, Empathy, and Trust form the cornerstone of our platform, ensuring the highest standards of care and security.
+
+---
+## Flow Diagram
+
+
+<img width="1682" height="817" alt="image" src="https://github.com/user-attachments/assets/a20005c8-fd39-494c-9ea3-3f9f94b50c8b" />
+
+Diagram:-[Diagram](https://app.eraser.io/workspace/UboAVCz4JPXhH2xMFFbe?origin=share)
+---
+## 🚀 Features
+
+- **🤖 AI-Powered Therapy** – 24/7 empathetic AI agents trained in multiple therapeutic approaches.
+- **🛡 Blockchain Security** – Immutable, transparent, and secure therapy sessions.
+- **🧠 Smart Analysis** – NLP and emotion detection for tailored interventions.
+- **🚨 Crisis Detection** – Real-time monitoring with emergency protocols.
+- **📶 IoT Integration** – Ambient therapeutic environments via connected devices.
+- **📊 Progress Tracking** – Blockchain-verified analytics and insights.
+- **🔒 Privacy First** – End-to-end encryption and zero-knowledge proofs.
+- **❤️ Holistic Care** – Wearables & health provider integration.
+
+---
+
+## 🛠 Tech Stack
+
+**Frontend**
+- TypeScript, Next.js, Tailwind CSS
+- Framer Motion – Smooth animations
+- Radix UI – Accessible components
+- NextAuth.js – Authentication
+
+**Backend**
+- Node.js, Express.js
+- MongoDB Atlas – Scalable NoSQL database
+- Inngest – Serverless workflow engine
+- EchoAPI – Prompt testing & debugging
+
+**AI**
+- Google Gemini AI – Conversational AI for therapy
+
+---
+
+## 🌐 Live Deployment
+
+- **Frontend** (Vercel): [https://mind-haven-fawn.vercel.app/](https://mind-haven-fawn.vercel.app/)
+- **Backend** (Render): [https://mindhaven-nca4.onrender.com/](https://mindhaven-nca4.onrender.com/)
+
+
