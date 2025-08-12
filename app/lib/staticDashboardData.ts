@@ -1,5 +1,13 @@
 // Static data for the dashboard
-const staticChatHistory = [
+const staticChatHistory: Array<{
+  id: string;
+  userId: string;
+  message: string;
+  role: "assistant" | "user";
+  timestamp: Date;
+  sentiment: string;
+  context: Record<string, unknown> | null;
+}> = [
   {
     id: "1",
     userId: "user1",
@@ -90,7 +98,7 @@ export const saveChatMessage = async (data: {
   userId: string;
   message: string;
   role: "user" | "assistant";
-  context?: any;
+  context?: Record<string, unknown> | null;
 }) => {
   const newMessage = {
     id: Math.random().toString(36).substr(2, 9),
@@ -99,7 +107,7 @@ export const saveChatMessage = async (data: {
     role: data.role,
     timestamp: new Date(),
     sentiment: "neutral",
-    context: data.context,
+    context: data.context || null, // Fix: Handle undefined by defaulting to null
   };
   staticChatHistory.push(newMessage);
   return newMessage;

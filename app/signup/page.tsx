@@ -30,11 +30,12 @@ export default function SignupPage() {
     try {
       await registerUser(name, email, password);
       router.push("/login");
-    } catch (err: any) {
-      setError(err.message || "Signup failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    }  catch (err) {
+  const errorMessage = err instanceof Error ? err.message : "Signup failed. Please try again.";
+  setError(errorMessage);
+} finally {
+  setLoading(false);
+} 
   };
 
   return (
