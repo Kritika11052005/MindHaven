@@ -7,14 +7,14 @@ import {
   Search,
   ArrowLeft,
 } from "lucide-react";
-import { cn } from "@/app/lib/utils";
-import { Button } from "@/app/components/ui/button";
-import { Input } from "@/app/components/ui/input";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
-import {staticSessions} from "@/app/lib/staticData"
+import {staticSessions} from "@/lib/staticData"
 
 type Session = {
   id: string;

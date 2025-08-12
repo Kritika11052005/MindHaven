@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { useToast } from "@/app/hooks/useToast";
+import { useToast } from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
 
 export function BookSession() {

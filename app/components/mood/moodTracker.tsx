@@ -21,8 +21,8 @@ import {
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
-import { getMoodHistory } from "@/app/lib/api/mood";
-import { useSession } from "@/app/lib/context/sessionContext";
+import { getMoodHistory } from "@/lib/api/mood";
+import { useSession } from "@/lib/context/sessionContext";
 import { format, subDays, startOfDay, endOfDay } from "date-fns";
 
 // Types for real mood data
