@@ -32,7 +32,13 @@ A world where mental health support is accessible, private, and personalized, po
 Privacy, Innovation, Empathy, and Trust form the cornerstone of our platform, ensuring the highest standards of care and security.
 
 ---
+## Flow Diagram
 
+
+<img width="1682" height="817" alt="image" src="https://github.com/user-attachments/assets/a20005c8-fd39-494c-9ea3-3f9f94b50c8b" />
+
+Diagram:-[Diagram](https://app.eraser.io/workspace/UboAVCz4JPXhH2xMFFbe?origin=share)
+---
 ## 🚀 Features
 
 - **🤖 AI-Powered Therapy** – 24/7 empathetic AI agents trained in multiple therapeutic approaches.
