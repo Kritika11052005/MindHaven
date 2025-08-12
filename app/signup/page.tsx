@@ -8,7 +8,7 @@ import { Container } from "../components/ui/container";
 import Link from "next/link";
 import { Input } from "../components/ui/input";
 import { Mail, User, Lock } from "lucide-react";
-import { registerUser } from "@/app/lib/api/auth";
+import { registerUser } from "@/lib/api/auth";
 
 export default function SignupPage() {
   const router = useRouter();

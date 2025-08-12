@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Button } from "@/app/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Send,
   Bot,
@@ -17,7 +17,7 @@ import {
   PlusCircle,
   MessageSquare,
 } from "lucide-react";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import {
@@ -26,8 +26,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/app/components/ui/card"
-import { Badge } from "@/app/components/ui/badge";
+} from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge";
 import { Variants } from "framer-motion";
 import {
   createChatSession,
@@ -36,8 +36,8 @@ import {
   ChatMessage,
   getAllChatSessions,
   ChatSession,
-} from "@/app/lib/api/chat";
-import { ScrollArea } from "@/app/components/ui/scroll-area";
+} from "@/lib/api/chat";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
 
 

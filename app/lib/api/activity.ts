@@ -1,4 +1,4 @@
-import { API_URL } from '@/app/config/constants';
+import { API_URL } from '@/config/constants';
 
 interface ActivityEntry {
   type: string;

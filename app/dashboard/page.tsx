@@ -39,7 +39,7 @@ import { cn } from "../lib/utils";
 import { MoodForm } from "../components/mood/moodForm";
 import { AnxietyGames } from "../components/games/anxietyGames";
 import { getMoodHistory,trackMood } from "../lib/api/mood";
-import { getUserActivities,saveMoodData,logActivity } from "@/app/lib/staticDashboardData";
+import { getUserActivities,saveMoodData,logActivity } from "@/lib/staticDashboardData";
 
 import {
   Dialog,
@@ -58,7 +58,7 @@ import {
 } from "date-fns";
 import { ActivityLogger } from "../components/activities/activittiesLogger";
 import { useSession } from "../lib/context/sessionContext";
-import { getAllChatSessions,getAuthHeaders } from "@/app/lib/api/chat";
+import { getAllChatSessions,getAuthHeaders } from "@/lib/api/chat";
 
 // Add this type definition
 type ActivityLevel = "none" | "low" | "medium" | "high";
