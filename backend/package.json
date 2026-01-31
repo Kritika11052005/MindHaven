@@ -15,29 +15,30 @@
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
     "@types/bcrypt": "^5.0.2",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/morgan": "^1.9.10",
     "@types/nodemailer": "^6.4.17",
     "@types/uuid": "^10.0.0",
     "bcrypt": "^5.1.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.0",
-    "express": "^4.19.2",
-    "helmet": "^7.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "helmet": "^7.2.0",
+    "inngest": "^3.50.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.0",
-    "morgan": "^1.10.0",
+    "morgan": "^1.10.1",
     "nodemailer": "^6.9.8",
-    "typescript": "^5.9.2",
     "uuid": "^10.0.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/morgan": "^1.9.10",
     "@types/node": "^25.1.0",
-    "inngest": "^3.50.0",
     "nodemon": "^3.1.10",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
   }
 }
