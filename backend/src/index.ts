@@ -2,7 +2,7 @@ import express from 'express';
 import { Request,Response } from 'express';
 import {serve} from "inngest/express"
 import { inngest } from './inngest';
-import {functions as inngestFunctions} from "./inngest/functions"
+import {functions as inngestFunctions} from "./inngest/aifunctions"
 import { logger } from './utils/logger';
 import { connectDB } from './utils/db';
 import dotenv from "dotenv"
