@@ -3,9 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { logger } from "../utils/logger";
 
 // Initialize Gemini
-const genAI = new GoogleGenerativeAI(
-  process.env.GEMINI_API_KEY || "AIzaSyByF44zN03SYeUC3eskZQtn3CTna2UgzJE"
-);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 // Function to handle chat message processing
 export const processChatMessage = inngest.createFunction(
@@ -41,7 +39,7 @@ export const processChatMessage = inngest.createFunction(
       // Analyze the message using Gemini
       const analysis = await step.run("analyze-message", async () => {
         try {
-          const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+          const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
           const prompt = `Analyze this therapy message and provide insights. Return ONLY a valid JSON object with no markdown formatting or additional text.
           Message: ${message}
